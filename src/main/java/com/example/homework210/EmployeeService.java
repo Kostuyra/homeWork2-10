@@ -1,8 +1,10 @@
 package com.example.homework210;
 
 import com.example.homework210.exception.EmployeeAlreadyAddedException;
+import com.example.homework210.exception.EmployeeNameWroteWithMistake;
 import com.example.homework210.exception.EmployeeNotFoundException;
 import com.example.homework210.exception.EmployeeStorageIsFullException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 
@@ -22,6 +24,10 @@ public class EmployeeService implements EmployeeServiceInterface, DepartmentsSer
 	@Override
 	public Employee addEmployee(String firstName, String lastName, Integer partOffice, Double salary) {
 		checkSizeArray();
+		checkAllSymbolsIsLetter(firstName);
+		checkAllSymbolsIsLetter(lastName);
+		firstName = StringUtils.capitalize(firstName.toLowerCase());
+		lastName = StringUtils.capitalize(lastName.toLowerCase());
 		Employee employee = new Employee(firstName, lastName, partOffice, salary);
 		if (checkExistEmployee(employee)) {
 			throw new EmployeeAlreadyAddedException(employee);
@@ -29,6 +35,7 @@ public class EmployeeService implements EmployeeServiceInterface, DepartmentsSer
 		employees.add(employee);
 		return employee;
 	}
+
 
 	@Override
 	public Employee removeEmployee(String firstName, String lastName, Integer partOffice, Double salary) {
@@ -58,16 +65,21 @@ public class EmployeeService implements EmployeeServiceInterface, DepartmentsSer
 		return employees.contains(employee);
 	}
 
-	private boolean checkSizeArray() {
+	private void checkSizeArray() {
 		if (employees.size() == countEmployees) {
 			throw new EmployeeStorageIsFullException();
 		}
-		return true;
+	}
+
+	private void checkAllSymbolsIsLetter(String word) {
+		if (!StringUtils.isAlpha(StringUtils.remove(word, "-"))) {
+			throw new EmployeeNameWroteWithMistake(word + " содержит недопусимые символы");
+		}
 	}
 
 	@Override
 	public Employee getEmployeeWithMaxSalaryFromPartOffice(int departmentId) {
-		return  employees.stream().
+		return employees.stream().
 				filter(e -> e.getPartOffice() == departmentId).
 				max(Comparator.comparingDouble(Employee::getSalary)).get();
 
