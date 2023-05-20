@@ -23,7 +23,7 @@ public class EmployeeService implements EmployeeServiceInterface, DepartmentsSer
 
 	@Override
 	public Employee addEmployee(String firstName, String lastName, Integer partOffice, Double salary) {
- 	checkSizeArray();
+		checkSizeArray();
 		checkAllSymbolsIsLetter(firstName);
 		checkAllSymbolsIsLetter(lastName);
 		firstName = StringUtils.capitalize(firstName.toLowerCase());
@@ -35,7 +35,6 @@ public class EmployeeService implements EmployeeServiceInterface, DepartmentsSer
 		employees.add(employee);
 		return employee;
 	}
-
 
 
 	@Override
@@ -73,7 +72,7 @@ public class EmployeeService implements EmployeeServiceInterface, DepartmentsSer
 	}
 
 	private void checkAllSymbolsIsLetter(String word) {
-		if (!StringUtils.isAlpha(StringUtils.remove(word,"-"))){
+		if (!StringUtils.isAlpha(StringUtils.remove(word, "-"))) {
 			throw new EmployeeNameWroteWithMistake(word + " содержит недопусимые символы");
 		}
 	}
